@@ -1,0 +1,20 @@
+* { margin: 0; padding: 0; }
+
+a { text-decoration: none; color: #333333; }
+
+ul, li { list-style: none; }
+
+html,body {height:100%;}
+body { font-size: 14px; font-family: "微软雅黑"; background: rgba(89, 176, 236, 0.44); }
+
+.container { margin: 30px auto; position: relative; width: 100%; display: flex;flex:1;flex-wrap: wrap;}
+
+.movie { width: 200px; margin: 7px 5px;box-shadow: 1px 1px 1em #dddddd; transition: 1s; position: absolute;top: 0;left:0;box-sizing: border-box;opacity:0.6}
+
+.movie img, .movie a { display: block;width:200px }
+
+.movie .year { height: 30px; line-height: 30px; background: #f7e9ee; display: flex; justify-content: space-between; overflow:hidden;padding:0 5px;}
+
+.movie .year span { text-align: right; }
+
+.movie .movie_info { display: flex; justify-content: space-between; background: #f7e9ee; padding:0 5px 5px 5px; }

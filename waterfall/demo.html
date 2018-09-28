@@ -1,0 +1,154 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>影史最佳电影top250</title>
+    <meta charset="utf-8">
+    <meta name="description" content="瀑布流的学习与应用，健壮性不够好，看过别人做的效果后做的，效果参考某网络教程">
+    <meta name="words" content="瀑布流，电影，豆瓣，top250，250">
+    <!-- 控制不发送referer破解防盗链 -->
+    <meta name="referrer" content="never">
+    <link rel="stylesheet" href="css/index.css">
+    <script src="js/myAjax.js"></script>
+</head>
+
+<body>
+    <div class="container">
+    </div>
+    <script>
+        var start = 0, count = 10, sortArr = [], min;
+        var itemsH = document.body.clientHeight + document.body.scrollTop;
+        var arrH = [itemsH, itemsH];
+        // 初始化请求过一次，这里floor
+        var click = Math.floor(250 / count);
+
+        init();
+        function init() {
+            requestApi(start, count);
+        }
+        // 请求接口返回数据
+        function requestApi(start, count) {
+            myAjax({
+                method: 'GET',
+                data: {
+                    start: start,
+                    count: count
+                },
+                url: 'https://api.douban.com/v2/movie/top250',
+                dataType: 'JSONP',
+                callback: getEn
+            });
+        }
+        function getEn(res) {
+            if (res.code) {
+                alert('公共接口ip请求达到上限,确定后跳转到你喜欢的百度');
+                window.location.href = "https://www.baidu.com";
+            }
+            handdleHTML(res.subjects);
+        }
+        //处理接口数据
+        function handdleHTML(input) {
+            input.forEach(function (item, index, arr) {
+                // 创建每个电影海报的dom并挂载
+                var movie = createDom(item, index);
+                setTimeout(function () {
+                    /* 计算每个海报的位置,放置海报 */
+                    comPostion(movie, start + index);
+
+                }, 100);
+            });
+        }
+        // 处理dom
+        function createDom(item, index, movie) {
+            var ele = document.createElement('a');
+            ele.href = item.alt;
+            var img = document.createElement('img');
+            img.src = item.images.large;
+            ele.appendChild(img);
+            var div1 = document.createElement('div');
+            div1.className = 'year';
+            var span11 = document.createElement('span');
+            span11.innerText = item.year;
+            div1.appendChild(span11);
+            var span12 = document.createElement('span');
+            span12.innerText = item.original_title;
+            div1.appendChild(span12);
+            var div2 = document.createElement('div');
+            div2.className = 'movie_info';
+            var span21 = document.createElement('span');
+            span21.innerText = item.title;
+            div2.appendChild(span21);
+            var span22 = document.createElement('span');
+            span22.innerText = item.rating.average;
+            div2.appendChild(span22);
+            ele.appendChild(div1);
+            ele.appendChild(div2);
+            var movie = document.createElement('div');
+            movie.className = 'movie';
+            movie.appendChild(ele);
+            document.getElementsByClassName('container')[0].appendChild(movie);
+            return movie;
+        }
+        function comPostion(e, num) {
+            var tip = num - (25 - click) * count
+            setTimeout(function () {
+                if ((num + 1) * 210 < document.body.clientWidth) {
+                    e.style.left = 210 * num + "px";
+                    e.style.top = 0;
+                    sortArr.push(e.clientHeight);
+                } else {
+                    min = sortArr.indexOf(Math.min.apply(null, sortArr));
+                    minItem = sortArr[min];
+                    e.style.top = minItem + 14 + "px";
+                    e.style.left = min * 210 + "px";
+                    sortArr.splice(min, 1, minItem + e.clientHeight + 14);
+                }
+                e.style.opacity = 1;
+            }, 100 * tip);
+
+        }
+        setTimeout(function () {
+            // 监听滚动条事件
+            document.onscroll = function (e) {
+                throttle(repeatReqApi, window);
+            }
+            // 监听窗口大小变化事件，重新计算movie项目位置
+            window.onresize = function (e) {
+                // 获取当前页面元素
+                throttle(reComPos, window);
+            }
+        }, 1500);
+
+        function reComPos() {
+            var arr = document.getElementsByClassName('movie');
+            sortArr = [];
+            var newArr = [].slice.call(arr);
+            newArr.forEach(function (item, index) {
+                comPostion(item, index);
+            });
+        }
+        // 500ms请求一次的节流函数
+        function throttle(method, context) {
+            clearTimeout(method.tId);
+            method.tId = setTimeout(function () {
+                method.call(context);
+            }, 100);
+        }
+
+        function repeatReqApi() {
+            var itemsH = document.body.clientHeight + document.body.scrollTop;
+            arrH.shift();
+            arrH.push(itemsH);
+
+            if ((itemsH >= document.body.scrollHeight - 150) && (arrH[0] <= arrH[1])) {
+                if (click) {
+                    start += count;
+                    requestApi(start, count);
+                    click--;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

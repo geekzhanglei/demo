@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>面向对象第一课-星级评分</title>
+    <style>
+        *{margin: 0;padding: 0;}
+        .star{
+            list-style: none;
+            display: inline-block;
+            background: url('./star.png') no-repeat 0 -40px;
+            width: 46px;
+            height: 46px;
+            cursor: pointer;
+        }
+        .body{
+            width: 700px;
+            height: auto;
+            font-size: 20px;
+            font-weight: bold;
+            line-height: 100px;
+            position: relative;
+            box-sizing: border-box;
+            padding-left: 20px;
+            margin: 100px auto;
+        }
+        .stars{
+            width: auto;
+            position: absolute;
+            top: 18px;
+            left: 120px;
+        }
+        #stars2{
+            width: auto;
+            position: absolute;
+            top: 100px;
+            left: 120px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="body">
+        <p>总体评价：</p>
+        <ul class="stars" id="stars">
+            <li class="star" title='很差'></li>
+            <li class="star" title='较差'></li>
+            <li class="star" title='一般'></li>
+            <li class="star" title='挺好'></li>
+            <li class="star" title='满意'></li>
+        </ul>
+
+        <ul class="stars" id="stars2">
+            <li class="star" title='很差'></li>
+            <li class="star" title='较差'></li>
+            <li class="star" title='一般'></li>
+            <li class="star" title='挺好'></li>
+            <li class="star" title='满意'></li>
+        </ul>
+    </div>
+    <script type="text/javascript" src='https://cdn.bootcss.com/jquery/3.2.1/jquery.js'></script>
+    <script type="text/javascript" src="oopjs.js"></script>
+</body>
+
+</html>
