@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>图片上传</title>
+</head>
+
+<body>
+    <!-- 方法一：form表单：原生 -->
+    <h2>方法一：form表单：原生</h2>
+    <form action="http://127.0.0.1:3000/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" /> <input type="submit" value="ok" />
+    </form>
+
+    <!-- 方法二：form表单：iframe -->
+    <h2>方法二：form表单：iframe</h2>
+    <form action="http://127.0.0.1:3000/upload" method="post" enctype="multipart/form-data" target="uploadIframe">
+        <input type="file" name="file" /> <input type='submit' value="ok" />
+    </form>
+    <iframe frameborder="0" name="uploadIframe" width="100%" height="40px"></iframe>
+
+    <!-- 方法三： ajax的formData上传-->
+    <h2>方法三：ajax的formData上传</h2>
+    <input accept="image/*" name="img" id="upload_file" type="file" onchange="change()">
+    <div class="tip"></div>
+
+    <!-- 图片预览 -->
+    <h2>图片预览一</h2>
+    <input type="file" id="preview1">
+    <img alt="图片预览位置" id='previewImg1'>
+
+    <!-- 图片预览 -->
+    <h2>图片预览二</h2>
+    <input type="file" id="preview2">
+    <img alt="图片预览位置" id='previewImg2'>
+
+    <!-- 图片压缩示例 -->
+    <h2>图片压缩示例</h2>
+    <input type="file" id='compress' onchange='mycompress()'>
+    <canvas id="canvas" style="display:none"></canvas>
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    // 方法三：
+    function change() {
+        var file = document.getElementById("upload_file").files[0];
+        var formdata = new FormData(); // 创建form对象
+        formdata.append('file', file, file.name); // 通过append向form对象添加数据,可以通过append继续添加数据，第一个type参数决定后端字段为ctx.request.files[type]
+        //或formdata.append('img',file);
+        let config = {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        }; //添加请求头
+        axios.post('http://127.0.0.1:3000/upload', formdata, config).then(response => { //这里的/xapi/upimage为接口
+            document.getElementsByClassName('tip')[0].innerHTML =
+                `<h5>${response.data.message}</h5><p>图片地址为<a href="${response.data.imgUrl}">${response.data.imgUrl}</a></p>`
+            console.log(response.data);
+        });
+    }
+    // 图片预览方法一
+    document.getElementById('preview1').onchange = function (event) {
+        var ele = document.getElementById('preview1').files[0];
+        var img = document.getElementById('previewImg1');
+        img.src = window.URL.createObjectURL(ele);
+    }
+    // 图片预览方法二
+    document.getElementById('preview2').onchange = function (event) {
+        var ele = document.getElementById('preview2').files[0];
+        var img = document.getElementById('previewImg2');
+        var fr = new FileReader();
+        fr.readAsDataURL(ele);
+        fr.onload = function (e) {
+            img.src = e.target.result;
+        }
+    }
+
+    // 图片压缩处理实例
+    function mycompress() {
+        var file = document.getElementById("compress").files[0];
+        var thisCanvas = document.getElementById('canvas');
+        var img = new Image(),
+            reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (e) {
+            img.src = e.target.result;
+            thisCanvas.style.display = 'block';
+        };
+        img.onload = function () {
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, 300, 200);
+
+            canvas.toBlob(function (blob) {
+                var formdata = new FormData(); // 创建form对象
+                formdata.append('file', blob, '1.png');
+                let config = {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }; //添加请求头
+                axios.post('http://127.0.0.1:3000/upload', formdata, config).then(response => { //这里的/xapi/upimage为接口
+                    console.log(response.data);
+                });
+            }, 'image/png', 0.8);
+        }
+    }
+</script>
+
+</html>
