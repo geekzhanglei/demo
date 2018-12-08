@@ -9,32 +9,44 @@
 </head>
 
 <body>
-    <!-- 方法一：form表单上传 -->
-    <h1>方法一：form表单</h1>
+    <!-- 方法一：form表单：原生 -->
+    <h1>方法一：form表单：原生</h1>
     <form action="http://127.0.0.1:3000/upload" method="post" enctype="multipart/form-data">
         <input type="file" name="file" /> <input type="submit" value="ok" />
     </form>
 
-    <!-- 方法二： input的file类型-->
-    <h2>方法二：input带file类型</h2>
+     <!-- 方法二：form表单：iframe -->
+     <h1>方法二：form表单：iframe</h1>
+     <form action="http://127.0.0.1:3000/upload" method="post" enctype="multipart/form-data" target="uploadIframe">
+         <input type="file" name="file" /> <input type='submit' value="ok"/>
+     </form>
+     <iframe frameborder="0" name="uploadIframe" onLoad="iframeLoad(this)"></iframe>
+
+    <!-- 方法三： ajax的formData上传-->
+    <h2>方法三：ajax的formData上传</h2>
     <input accept="image/*" name="img" id="upload_file" type="file" onchange="change()">
 
 
 </body>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
+    // 方法二：
+    function iframeLoad(iframe) {
+        var doc = iframe.contentWindow.document; 
+        doc.body.innerHTML;
+    }
+    // 方法三：
     function change() {
         var file = document.getElementById("upload_file").files[0];
-        console.log(file)
-        var formdata1 = new FormData(); // 创建form对象
-        formdata1.append('img', file, file.name); // 通过append向form对象添加数据,可以通过append继续添加数据
-        //或formdata1.append('img',file);
+        var formdata = new FormData(); // 创建form对象
+        formdata.append('file', file, file.name); // 通过append向form对象添加数据,可以通过append继续添加数据，第一个type参数决定后端字段为ctx.request.files[type]
+        //或formdata.append('img',file);
         let config = {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         }; //添加请求头
-        axios.post('http://127.0.0.1:3000/upload', formdata1, config).then(response => { //这里的/xapi/upimage为接口
+        axios.post('http://127.0.0.1:3000/upload', formdata, config).then(response => { //这里的/xapi/upimage为接口
             console.log(response.data);
         });
     }

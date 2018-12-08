@@ -30,6 +30,9 @@ console.log(`静态资源地址${serverPath}`);
 
 // post请求路由
 router.post('/upload', async function(ctx, next) {
+    if(!ctx.request.files.file.size) {  // 如果文件不存在，终止
+        return;
+    }
     // 获取上传图片
     const result = await uploadFile(ctx, {
         fileType: 'img',
@@ -53,9 +56,6 @@ console.log('listening on port 3000');
 
 // 子函数
 async function uploadFile(ctx, options) {
-    console.log('。。。。。。。。。。。。。。。')
-    console.log(ctx)
-    console.log('。。。。。。。。。。。。。。。')
     const file = ctx.request.files.file; // 获取上传文件
     const fileType = options.fileType;
     const filePath = path.join(options.path, fileType);
@@ -67,7 +67,7 @@ async function uploadFile(ctx, options) {
     }
     console.log('创建文件上传目录完成');
     console.log('开始上传...');
-    console.log(file)
+    // console.log(ctx.request.files.img)
     const reader = fs.createReadStream(file.path); // 创建可读流
     const newFileName = Rename(file.name);
     const newFilePath = path.join(filePath, newFileName);
