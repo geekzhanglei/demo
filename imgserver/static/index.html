@@ -26,6 +26,16 @@
     <h2>方法三：ajax的formData上传</h2>
     <input accept="image/*" name="img" id="upload_file" type="file" onchange="change()">
 
+    <!-- 图片预览 -->
+    <h2>图片预览</h2>
+    <input type="file" id="preview">
+    <img alt="图片预览位置" id='previewImg'>
+
+    <!-- 图片压缩示例 -->
+    <h2>图片压缩示例</h2>
+    <input type="file" id='compress' onchange='mycompress()'>
+    <canvas id="canvas"></canvas>
+    <img src="./1.png" alt="nono" id="testImg">
 
 </body>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -49,6 +59,33 @@
         axios.post('http://127.0.0.1:3000/upload', formdata, config).then(response => { //这里的/xapi/upimage为接口
             console.log(response.data);
         });
+    }
+    // 图片预览方法一
+    document.getElementById('preview').onchange = function(event) {
+        var ele =  document.getElementById('preview').files[0];
+        var img = document.getElementById('previewImg');
+        img.src=window.URL.createObjectURL(ele);
+    }
+    // 图片预览方法二
+    // document.getElementById('preview').onchange = function(event) {
+    //     var ele =  document.getElementById('preview').files[0];
+    //     var img = document.getElementById('previewImg');
+    //     var fr = new FileReader();
+    //     fr.onload = function(e) {
+    //         img.src=e.target.result;
+    //     }
+    //     fr.readAsDataURL(ele);
+    // }
+    
+    // 图片压缩处理实例
+    function mycompress(){
+        // var img = document.getElementById("compress").files[0];
+        var img = document.getElementById('testImg');
+        console.log(img)
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img,0,0,200,200);
+        
     }
 </script>
 
