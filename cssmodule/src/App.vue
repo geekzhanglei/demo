@@ -5,6 +5,12 @@
       </div>
       <Child></Child>
   </div>
+  <!-- <div id="app">
+    <div class="this-block new-block">
+      <p>这是第一个正方形</p>
+    </div>
+    <Child></Child>
+  </div> -->
 </template>
 
 <script>
@@ -43,3 +49,25 @@ export default {
 }
 </style>
 
+<style>
+/* @import './my.css'; */
+ /* 这个style是普通写法，包括子文件引入，当前block及全局block类的规则 */
+/* #app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+.this-block {
+  width:200px;
+  height: 200px;
+  background: red;
+}
+.block {
+  width:200px;
+  height: 200px;
+  background: green;
+} */
+</style>

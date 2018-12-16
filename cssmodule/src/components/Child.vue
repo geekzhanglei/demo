@@ -4,10 +4,7 @@
 
 <script>
 export default {
-  name: 'Child',
-  props: {
-    msg: String
-  }
+  name: 'Child'
 }
 </script>
 
